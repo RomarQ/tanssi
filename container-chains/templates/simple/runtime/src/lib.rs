@@ -22,11 +22,11 @@
 #[cfg(feature = "std")]
 include!(concat!(env!("OUT_DIR"), "/wasm_binary.rs"));
 
-#[cfg(feature = "std")]
-use sp_version::NativeVersion;
 use pallet_nfts::PalletFeatures;
 #[cfg(any(feature = "std", test))]
 pub use sp_runtime::BuildStorage;
+#[cfg(feature = "std")]
+use sp_version::NativeVersion;
 /// Constant values used within the runtime.
 pub mod constants;
 use constants::currency::*;
@@ -40,9 +40,9 @@ use {
         pallet_prelude::DispatchResult,
         parameter_types,
         traits::{
-            ConstU128, ConstU32, ConstU64, ConstU8, Contains, InstanceFilter, OffchainWorker,
-            OnFinalize, OnIdle, OnInitialize, OnRuntimeUpgrade, AsEnsureOriginWithArg, EitherOfDiverse,
-            tokens::nonfungibles_v2::Inspect,
+            tokens::nonfungibles_v2::Inspect, AsEnsureOriginWithArg, ConstU128, ConstU32, ConstU64,
+            ConstU8, Contains, EitherOfDiverse, InstanceFilter, OffchainWorker, OnFinalize, OnIdle,
+            OnInitialize, OnRuntimeUpgrade,
         },
         weights::{
             constants::{
@@ -56,7 +56,7 @@ use {
     },
     frame_system::{
         limits::{BlockLength, BlockWeights},
-        EnsureRoot, EnsureSigned
+        EnsureRoot, EnsureSigned,
     },
     nimbus_primitives::NimbusId,
     pallet_transaction_payment::{ConstFeeMultiplier, CurrencyAdapter, Multiplier},
@@ -196,7 +196,7 @@ pub const VERSION: RuntimeVersion = RuntimeVersion {
     spec_name: create_runtime_str!("container-chain-template"),
     impl_name: create_runtime_str!("container-chain-template"),
     authoring_version: 1,
-    spec_version: 300,
+    spec_version: 302,
     impl_version: 0,
     apis: RUNTIME_API_VERSIONS,
     transaction_version: 1,
@@ -656,243 +656,241 @@ impl pallet_author_inherent::Config for Runtime {
 }
 
 parameter_types! {
-	pub Features: PalletFeatures = PalletFeatures::all_enabled();
-	pub const MaxAttributesPerCall: u32 = 10;
+    pub Features: PalletFeatures = PalletFeatures::all_enabled();
+    pub const MaxAttributesPerCall: u32 = 10;
 }
 
 impl pallet_nfts::Config for Runtime {
-	type RuntimeEvent = RuntimeEvent;
-	type CollectionId = u32;
-	type ItemId = u32;
-	type Currency = Balances;
-	type ForceOrigin = frame_system::EnsureRoot<AccountId>;
-	type CollectionDeposit = CollectionDeposit;
-	type ItemDeposit = ItemDeposit;
-	type MetadataDepositBase = MetadataDepositBase;
-	type AttributeDepositBase = MetadataDepositBase;
-	type DepositPerByte = MetadataDepositPerByte;
-	type StringLimit = ConstU32<256>;
-	type KeyLimit = ConstU32<64>;
-	type ValueLimit = ConstU32<256>;
-	type ApprovalsLimit = ApprovalsLimit;
-	type ItemAttributesApprovalsLimit = ItemAttributesApprovalsLimit;
-	type MaxTips = MaxTips;
-	type MaxDeadlineDuration = MaxDeadlineDuration;
-	type MaxAttributesPerCall = MaxAttributesPerCall;
-	type Features = Features;
-	type OffchainSignature = Signature;
-	type OffchainPublic = <Signature as Verify>::Signer;
-	type WeightInfo = pallet_nfts::weights::SubstrateWeight<Runtime>;
-	#[cfg(feature = "runtime-benchmarks")]
-	type Helper = ();
-	type CreateOrigin = AsEnsureOriginWithArg<EnsureSigned<AccountId>>;
-	type Locker = ();
+    type RuntimeEvent = RuntimeEvent;
+    type CollectionId = u32;
+    type ItemId = u32;
+    type Currency = Balances;
+    type ForceOrigin = frame_system::EnsureRoot<AccountId>;
+    type CollectionDeposit = CollectionDeposit;
+    type ItemDeposit = ItemDeposit;
+    type MetadataDepositBase = MetadataDepositBase;
+    type AttributeDepositBase = MetadataDepositBase;
+    type DepositPerByte = MetadataDepositPerByte;
+    type StringLimit = ConstU32<256>;
+    type KeyLimit = ConstU32<64>;
+    type ValueLimit = ConstU32<256>;
+    type ApprovalsLimit = ApprovalsLimit;
+    type ItemAttributesApprovalsLimit = ItemAttributesApprovalsLimit;
+    type MaxTips = MaxTips;
+    type MaxDeadlineDuration = MaxDeadlineDuration;
+    type MaxAttributesPerCall = MaxAttributesPerCall;
+    type Features = Features;
+    type OffchainSignature = Signature;
+    type OffchainPublic = <Signature as Verify>::Signer;
+    type WeightInfo = pallet_nfts::weights::SubstrateWeight<Runtime>;
+    #[cfg(feature = "runtime-benchmarks")]
+    type Helper = ();
+    type CreateOrigin = AsEnsureOriginWithArg<EnsureSigned<AccountId>>;
+    type Locker = ();
 }
 
 parameter_types! {
-	pub const CollectionDeposit: Balance = 100 * DOLLARS;
-	pub const ItemDeposit: Balance = 1 * DOLLARS;
-	pub const ApprovalsLimit: u32 = 20;
-	pub const ItemAttributesApprovalsLimit: u32 = 20;
-	pub const MaxTips: u32 = 10;
-	pub const MaxDeadlineDuration: BlockNumber = 12 * 30 * DAYS;
+    pub const CollectionDeposit: Balance = 100 * DOLLARS;
+    pub const ItemDeposit: Balance = 1 * DOLLARS;
+    pub const ApprovalsLimit: u32 = 20;
+    pub const ItemAttributesApprovalsLimit: u32 = 20;
+    pub const MaxTips: u32 = 10;
+    pub const MaxDeadlineDuration: BlockNumber = 12 * 30 * DAYS;
 }
 
 impl pallet_uniques::Config for Runtime {
-	type RuntimeEvent = RuntimeEvent;
-	type CollectionId = u32;
-	type ItemId = u32;
-	type Currency = Balances;
-	type ForceOrigin = frame_system::EnsureRoot<AccountId>;
-	type CollectionDeposit = CollectionDeposit;
-	type ItemDeposit = ItemDeposit;
-	type MetadataDepositBase = MetadataDepositBase;
-	type AttributeDepositBase = MetadataDepositBase;
-	type DepositPerByte = MetadataDepositPerByte;
-	type StringLimit = ConstU32<128>;
-	type KeyLimit = ConstU32<32>;
-	type ValueLimit = ConstU32<64>;
-	type WeightInfo = pallet_uniques::weights::SubstrateWeight<Runtime>;
-	#[cfg(feature = "runtime-benchmarks")]
-	type Helper = ();
-	type CreateOrigin = AsEnsureOriginWithArg<EnsureSigned<AccountId>>;
-	type Locker = ();
+    type RuntimeEvent = RuntimeEvent;
+    type CollectionId = u32;
+    type ItemId = u32;
+    type Currency = Balances;
+    type ForceOrigin = frame_system::EnsureRoot<AccountId>;
+    type CollectionDeposit = CollectionDeposit;
+    type ItemDeposit = ItemDeposit;
+    type MetadataDepositBase = MetadataDepositBase;
+    type AttributeDepositBase = MetadataDepositBase;
+    type DepositPerByte = MetadataDepositPerByte;
+    type StringLimit = ConstU32<128>;
+    type KeyLimit = ConstU32<32>;
+    type ValueLimit = ConstU32<64>;
+    type WeightInfo = pallet_uniques::weights::SubstrateWeight<Runtime>;
+    #[cfg(feature = "runtime-benchmarks")]
+    type Helper = ();
+    type CreateOrigin = AsEnsureOriginWithArg<EnsureSigned<AccountId>>;
+    type Locker = ();
 }
 
 parameter_types! {
-	pub const AssetDeposit: Balance = 10 * UNIT;
-	pub const AssetAccountDeposit: Balance = deposit(1, 16);
-	pub const ApprovalDeposit: Balance = EXISTENTIAL_DEPOSIT;
-	pub const StringLimit: u32 = 50;
-	pub const MetadataDepositBase: Balance = deposit(1, 68);
-	pub const MetadataDepositPerByte: Balance = deposit(0, 1);
+    pub const AssetDeposit: Balance = 10 * UNIT;
+    pub const AssetAccountDeposit: Balance = deposit(1, 16);
+    pub const ApprovalDeposit: Balance = EXISTENTIAL_DEPOSIT;
+    pub const StringLimit: u32 = 50;
+    pub const MetadataDepositBase: Balance = deposit(1, 68);
+    pub const MetadataDepositPerByte: Balance = deposit(0, 1);
 }
 
 impl pallet_assets::Config for Runtime {
-	type RuntimeEvent = RuntimeEvent;
-	type Balance = Balance;
-	type AssetId = u32;
-	type AssetIdParameter = parity_scale_codec::Compact<u32>;
-	type Currency = Balances;
-	type CreateOrigin = AsEnsureOriginWithArg<EnsureSigned<AccountId>>;
-	type CallbackHandle = ();
-	type ForceOrigin = EnsureRoot<AccountId>;
-	type AssetDeposit = AssetDeposit;
-	type AssetAccountDeposit = AssetAccountDeposit;
-	type MetadataDepositBase = MetadataDepositBase;
-	type MetadataDepositPerByte = MetadataDepositPerByte;
-	type ApprovalDeposit = ApprovalDeposit;
-	type StringLimit = StringLimit;
-	type Freezer = ();
-	type Extra = ();
-	type RemoveItemsLimit = ConstU32<1000>;
-	type WeightInfo = pallet_assets::weights::SubstrateWeight<Runtime>;
-	#[cfg(feature = "runtime-benchmarks")]
-	type BenchmarkHelper = ();
+    type RuntimeEvent = RuntimeEvent;
+    type Balance = Balance;
+    type AssetId = u32;
+    type AssetIdParameter = parity_scale_codec::Compact<u32>;
+    type Currency = Balances;
+    type CreateOrigin = AsEnsureOriginWithArg<EnsureSigned<AccountId>>;
+    type CallbackHandle = ();
+    type ForceOrigin = EnsureRoot<AccountId>;
+    type AssetDeposit = AssetDeposit;
+    type AssetAccountDeposit = AssetAccountDeposit;
+    type MetadataDepositBase = MetadataDepositBase;
+    type MetadataDepositPerByte = MetadataDepositPerByte;
+    type ApprovalDeposit = ApprovalDeposit;
+    type StringLimit = StringLimit;
+    type Freezer = ();
+    type Extra = ();
+    type RemoveItemsLimit = ConstU32<1000>;
+    type WeightInfo = pallet_assets::weights::SubstrateWeight<Runtime>;
+    #[cfg(feature = "runtime-benchmarks")]
+    type BenchmarkHelper = ();
 }
 
 parameter_types! {
-	pub const CouncilMotionDuration: BlockNumber = 5 * DAYS;
-	pub const CouncilMaxProposals: u32 = 100;
-	pub const CouncilMaxMembers: u32 = 100;
+    pub const CouncilMotionDuration: BlockNumber = 5 * DAYS;
+    pub const CouncilMaxProposals: u32 = 100;
+    pub const CouncilMaxMembers: u32 = 100;
     pub MaxCollectivesProposalWeight: Weight = Perbill::from_percent(50) * RuntimeBlockWeights::get().max_block;
 }
 
 type CouncilCollective = pallet_collective::Instance1;
 impl pallet_collective::Config<CouncilCollective> for Runtime {
-	type RuntimeOrigin = RuntimeOrigin;
-	type Proposal = RuntimeCall;
-	type RuntimeEvent = RuntimeEvent;
-	type MotionDuration = CouncilMotionDuration;
-	type MaxProposals = CouncilMaxProposals;
-	type MaxMembers = CouncilMaxMembers;
-	type DefaultVote = pallet_collective::PrimeDefaultVote;
-	type WeightInfo = pallet_collective::weights::SubstrateWeight<Runtime>;
-	type SetMembersOrigin = EnsureRoot<Self::AccountId>;
-	type MaxProposalWeight = MaxCollectivesProposalWeight;
+    type RuntimeOrigin = RuntimeOrigin;
+    type Proposal = RuntimeCall;
+    type RuntimeEvent = RuntimeEvent;
+    type MotionDuration = CouncilMotionDuration;
+    type MaxProposals = CouncilMaxProposals;
+    type MaxMembers = CouncilMaxMembers;
+    type DefaultVote = pallet_collective::PrimeDefaultVote;
+    type WeightInfo = pallet_collective::weights::SubstrateWeight<Runtime>;
+    type SetMembersOrigin = EnsureRoot<Self::AccountId>;
+    type MaxProposalWeight = MaxCollectivesProposalWeight;
 }
 
 parameter_types! {
-	pub const TechnicalMotionDuration: BlockNumber = 5 * DAYS;
-	pub const TechnicalMaxProposals: u32 = 100;
-	pub const TechnicalMaxMembers: u32 = 100;
+    pub const TechnicalMotionDuration: BlockNumber = 5 * DAYS;
+    pub const TechnicalMaxProposals: u32 = 100;
+    pub const TechnicalMaxMembers: u32 = 100;
 }
 
 type TechnicalCollective = pallet_collective::Instance2;
 impl pallet_collective::Config<TechnicalCollective> for Runtime {
-	type RuntimeOrigin = RuntimeOrigin;
-	type Proposal = RuntimeCall;
-	type RuntimeEvent = RuntimeEvent;
-	type MotionDuration = TechnicalMotionDuration;
-	type MaxProposals = TechnicalMaxProposals;
-	type MaxMembers = TechnicalMaxMembers;
-	type DefaultVote = pallet_collective::PrimeDefaultVote;
-	type WeightInfo = pallet_collective::weights::SubstrateWeight<Runtime>;
-	type SetMembersOrigin = EnsureRoot<Self::AccountId>;
-	type MaxProposalWeight = MaxCollectivesProposalWeight;
+    type RuntimeOrigin = RuntimeOrigin;
+    type Proposal = RuntimeCall;
+    type RuntimeEvent = RuntimeEvent;
+    type MotionDuration = TechnicalMotionDuration;
+    type MaxProposals = TechnicalMaxProposals;
+    type MaxMembers = TechnicalMaxMembers;
+    type DefaultVote = pallet_collective::PrimeDefaultVote;
+    type WeightInfo = pallet_collective::weights::SubstrateWeight<Runtime>;
+    type SetMembersOrigin = EnsureRoot<Self::AccountId>;
+    type MaxProposalWeight = MaxCollectivesProposalWeight;
 }
 
 const ALLIANCE_MOTION_DURATION_IN_BLOCKS: BlockNumber = 5 * DAYS;
 
 parameter_types! {
-	pub const AllianceMotionDuration: BlockNumber = ALLIANCE_MOTION_DURATION_IN_BLOCKS;
-	pub const AllianceMaxProposals: u32 = 100;
-	pub const AllianceMaxMembers: u32 = 100;
+    pub const AllianceMotionDuration: BlockNumber = ALLIANCE_MOTION_DURATION_IN_BLOCKS;
+    pub const AllianceMaxProposals: u32 = 100;
+    pub const AllianceMaxMembers: u32 = 100;
 }
 
 type AllianceCollective = pallet_collective::Instance3;
 impl pallet_collective::Config<AllianceCollective> for Runtime {
-	type RuntimeOrigin = RuntimeOrigin;
-	type Proposal = RuntimeCall;
-	type RuntimeEvent = RuntimeEvent;
-	type MotionDuration = AllianceMotionDuration;
-	type MaxProposals = AllianceMaxProposals;
-	type MaxMembers = AllianceMaxMembers;
-	type DefaultVote = pallet_collective::PrimeDefaultVote;
-	type WeightInfo = pallet_collective::weights::SubstrateWeight<Runtime>;
-	type SetMembersOrigin = EnsureRoot<Self::AccountId>;
-	type MaxProposalWeight = MaxCollectivesProposalWeight;
+    type RuntimeOrigin = RuntimeOrigin;
+    type Proposal = RuntimeCall;
+    type RuntimeEvent = RuntimeEvent;
+    type MotionDuration = AllianceMotionDuration;
+    type MaxProposals = AllianceMaxProposals;
+    type MaxMembers = AllianceMaxMembers;
+    type DefaultVote = pallet_collective::PrimeDefaultVote;
+    type WeightInfo = pallet_collective::weights::SubstrateWeight<Runtime>;
+    type SetMembersOrigin = EnsureRoot<Self::AccountId>;
+    type MaxProposalWeight = MaxCollectivesProposalWeight;
 }
 
 parameter_types! {
-	pub const CommunityLoanPalletId: PalletId = PalletId(*b"py/loana");
-	pub const MaxLoans: u32 = 10000;
-	pub const VotingTime: BlockNumber = 10;
-	pub const MaximumCommitteeMembers: u32 = 10;
-	pub const MaxMilestones: u32 = 8;
+    pub const CommunityLoanPalletId: PalletId = PalletId(*b"py/loana");
+    pub const MaxLoans: u32 = 10000;
+    pub const VotingTime: BlockNumber = 10;
+    pub const MaximumCommitteeMembers: u32 = 10;
+    pub const MaxMilestones: u32 = 8;
     pub const ProposalBond: Permill = Permill::from_percent(5);
     pub const ProposalBondMinimum: Balance = 100 * DANCE;
 }
 
 /// Configure the pallet-community-loan-pool in pallets/community-loan-pool.
 impl pallet_community_loan_pool::Config for Runtime {
-	type PalletId = CommunityLoanPalletId;
-	type Currency = Balances;
-	type ApproveOrigin = EitherOfDiverse<
-		EnsureRoot<AccountId>,
-		pallet_collective::EnsureProportionAtLeast<AccountId, CouncilCollective, 3, 5>,
-	>;
-	type RejectOrigin = EitherOfDiverse<
-		EnsureRoot<AccountId>,
-		pallet_collective::EnsureProportionMoreThan<AccountId, CouncilCollective, 1, 2>,
-	>;
-	type CommitteeOrigin = EitherOfDiverse<
-		EnsureRoot<AccountId>,
-		pallet_collective::EnsureProportionMoreThan<AccountId, CouncilCollective, 1, 2>,
-	>;
-	type DeleteOrigin = EitherOfDiverse<
-		EnsureRoot<AccountId>,
-		pallet_collective::EnsureProportionMoreThan<AccountId, CouncilCollective, 1, 2>,
-	>;
-	type RuntimeEvent = RuntimeEvent;
-	type ProposalBond = ProposalBond;
-	type ProposalBondMinimum = ProposalBondMinimum;
-	type ProposalBondMaximum = ();
-	type OnSlash = ();
-	type MaxOngoingLoans = MaxLoans;
-	type TimeProvider = Timestamp;
-	type WeightInfo = pallet_community_loan_pool::weights::SubstrateWeight<Runtime>;
-	#[cfg(feature = "runtime-benchmarks")]
-	type Helper = pallet_nft::NftHelper;
-	type VotingTime = VotingTime;
-	type MaxCommitteeMembers = MaximumCommitteeMembers;
-	type MaxMilestonesPerProject = MaxMilestones;
+    type PalletId = CommunityLoanPalletId;
+    type Currency = Balances;
+    type ApproveOrigin = EitherOfDiverse<
+        EnsureRoot<AccountId>,
+        pallet_collective::EnsureProportionAtLeast<AccountId, CouncilCollective, 3, 5>,
+    >;
+    type RejectOrigin = EitherOfDiverse<
+        EnsureRoot<AccountId>,
+        pallet_collective::EnsureProportionMoreThan<AccountId, CouncilCollective, 1, 2>,
+    >;
+    type CommitteeOrigin = EitherOfDiverse<
+        EnsureRoot<AccountId>,
+        pallet_collective::EnsureProportionMoreThan<AccountId, CouncilCollective, 1, 2>,
+    >;
+    type DeleteOrigin = EitherOfDiverse<
+        EnsureRoot<AccountId>,
+        pallet_collective::EnsureProportionMoreThan<AccountId, CouncilCollective, 1, 2>,
+    >;
+    type RuntimeEvent = RuntimeEvent;
+    type ProposalBond = ProposalBond;
+    type ProposalBondMinimum = ProposalBondMinimum;
+    type ProposalBondMaximum = ();
+    type OnSlash = ();
+    type MaxOngoingLoans = MaxLoans;
+    type TimeProvider = Timestamp;
+    type WeightInfo = pallet_community_loan_pool::weights::SubstrateWeight<Runtime>;
+    #[cfg(feature = "runtime-benchmarks")]
+    type Helper = pallet_nft::NftHelper;
+    type VotingTime = VotingTime;
+    type MaxCommitteeMembers = MaximumCommitteeMembers;
+    type MaxMilestonesPerProject = MaxMilestones;
 }
 
 parameter_types! {
-	pub const MinimumRemainingAmount: Balance = 100 * DANCE;
-	pub const MaxStaker: u32 = 10000;
+    pub const MinimumRemainingAmount: Balance = 100 * DANCE;
+    pub const MaxStaker: u32 = 10000;
 }
 
 /// Configure the pallet-xcavate-staking in pallets/xcavate-staking.
 impl pallet_xcavate_staking::Config for Runtime {
-	type RuntimeEvent = RuntimeEvent;
-	type Currency = Balances;
-	type MinimumRemainingAmount = MinimumRemainingAmount;
-	type MaxStakers = MaxStaker;
-	type TimeProvider = Timestamp;
+    type RuntimeEvent = RuntimeEvent;
+    type Currency = Balances;
+    type MinimumRemainingAmount = MinimumRemainingAmount;
+    type MaxStakers = MaxStaker;
+    type TimeProvider = Timestamp;
 }
 
 parameter_types! {
-	pub const NftMarketplacePalletId: PalletId = PalletId(*b"py/nftxc");
-	pub const MaxListedNft: u32 = 1000000;
-	pub const MaxNftsInCollection: u32 = 100;
+    pub const NftMarketplacePalletId: PalletId = PalletId(*b"py/nftxc");
+    pub const MaxListedNft: u32 = 1000000;
+    pub const MaxNftsInCollection: u32 = 100;
 }
 
 /// Configure the pallet-xcavate-staking in pallets/xcavate-staking.
 impl pallet_nft_marketplace::Config for Runtime {
-	type RuntimeEvent = RuntimeEvent;
-	type Currency = Balances;
-	type PalletId = NftMarketplacePalletId;
-	#[cfg(feature = "runtime-benchmarks")]
-	type Helper = pallet_nft::NftHelper;
-	type MaxListedNfts = MaxListedNft;
-	type MaxNftInCollection = MaxNftsInCollection;
+    type RuntimeEvent = RuntimeEvent;
+    type Currency = Balances;
+    type PalletId = NftMarketplacePalletId;
+    #[cfg(feature = "runtime-benchmarks")]
+    type Helper = pallet_nft::NftHelper;
+    type MaxListedNfts = MaxListedNft;
+    type MaxNftInCollection = MaxNftsInCollection;
 }
 
 impl pallet_insecure_randomness_collective_flip::Config for Runtime {}
-
-
 
 // Create the runtime by composing the FRAME pallets that were previously configured.
 construct_runtime!(
@@ -926,16 +924,16 @@ construct_runtime!(
 
         // NFTs
         Uniques: pallet_uniques,
-		Nfts: pallet_nfts,
+        Nfts: pallet_nfts,
 
         // Custom Pallets
         CommunityLoanPool: pallet_community_loan_pool = 36,
-		XcavateStaking: pallet_xcavate_staking = 37,
-		NftMarketplace: pallet_nft_marketplace = 38,
+        XcavateStaking: pallet_xcavate_staking = 37,
+        NftMarketplace: pallet_nft_marketplace = 38,
 
         Council: pallet_collective::<Instance1>,
-		TechnicalCommittee: pallet_collective::<Instance2>,
-		AllianceMotion: pallet_collective::<Instance3>,
+        TechnicalCommittee: pallet_collective::<Instance2>,
+        AllianceMotion: pallet_collective::<Instance3>,
         RandomnessCollectiveFlip: pallet_insecure_randomness_collective_flip,
 
 
