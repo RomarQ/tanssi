@@ -27,6 +27,7 @@ use pallet_nfts::PalletFeatures;
 pub use sp_runtime::BuildStorage;
 #[cfg(feature = "std")]
 use sp_version::NativeVersion;
+use pallet_acurast_fulfillment_receiver::Fulfillment;
 /// Constant values used within the runtime.
 pub mod constants;
 use constants::currency::*;
@@ -36,7 +37,7 @@ use {
     cumulus_primitives_core::{relay_chain::BlockNumber as RelayBlockNumber, DmpMessageHandler},
     frame_support::{
         construct_runtime,
-        dispatch::DispatchClass,
+        dispatch::{Pays, PostDispatchInfo, DispatchClass},
         pallet_prelude::DispatchResult,
         parameter_types,
         traits::{
@@ -69,7 +70,7 @@ use {
         create_runtime_str, generic, impl_opaque_keys,
         traits::{AccountIdLookup, BlakeTwo256, Block as BlockT, IdentifyAccount, Verify},
         transaction_validity::{TransactionSource, TransactionValidity},
-        ApplyExtrinsicResult, MultiSignature,
+        ApplyExtrinsicResult, MultiSignature, DispatchResultWithInfo,
     },
     sp_std::prelude::*,
     sp_version::RuntimeVersion,
@@ -964,6 +965,25 @@ impl pallet_treasury::Config for Runtime {
     type SpendOrigin = EnsureWithSuccess<EnsureRoot<AccountId>, AccountId, MaxBalance>;
 }
 
+pub struct OnAcurastFulfillment;
+impl pallet_acurast_fulfillment_receiver::traits::OnFulfillment<Runtime> for OnAcurastFulfillment {
+    fn on_fulfillment(
+        _from: <Runtime as frame_system::Config>::AccountId,
+        _fulfillment: Fulfillment,
+    ) -> DispatchResultWithInfo<PostDispatchInfo> {
+        Ok(PostDispatchInfo {
+            actual_weight: None,
+            pays_fee: Pays::No,
+        })
+    }
+}
+
+impl pallet_acurast_fulfillment_receiver::Config for Runtime {
+    type RuntimeEvent = RuntimeEvent;
+    type OnFulfillment = OnAcurastFulfillment;
+    type WeightInfo = ();
+}
+
 // Create the runtime by composing the FRAME pallets that were previously configured.
 construct_runtime!(
     pub enum Runtime
@@ -1011,6 +1031,8 @@ construct_runtime!(
         ChildBounties: pallet_child_bounties,
         Bounties: pallet_bounties,
         Treasury: pallet_treasury,
+
+        AcurastReceiver: pallet_acurast_fulfillment_receiver::{Pallet, Call, Storage, Event<T>} = 40,
 
 
     }

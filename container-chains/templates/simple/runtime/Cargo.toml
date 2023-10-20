@@ -53,7 +53,9 @@ node-primitives = { workspace = true }
 pallet-collective = { workspace = true }
 pallet-child-bounties = { workspace = true }
 pallet-bounties = { workspace = true }
-pallet-treasury = {workspace = true}
+pallet-treasury = { workspace = true }
+pallet-acurast-fulfillment-receiver = { workspace = true }
+acurast-p256-crypto = { workspace = true }
 pallet-insecure-randomness-collective-flip = { workspace = true }
 
 pallet-proxy = { workspace = true }
@@ -136,6 +138,8 @@ std = [
 	"pallet-child-bounties/std",
 	"pallet-bounties/std",
 	"pallet-treasury/std",
+	"pallet-acurast-fulfillment-receiver/std",
+	"acurast-p256-crypto/std",
 	"pallet-insecure-randomness-collective-flip/std",
 	"node-primitives/std",
 	"parachain-info/std",
