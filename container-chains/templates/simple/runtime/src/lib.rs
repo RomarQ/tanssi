@@ -1000,39 +1000,39 @@ construct_runtime!(
         MaintenanceMode: pallet_maintenance_mode = 8,
 
         // Monetary stuff.
-        Balances: pallet_balances = 10,
-        TransactionPayment: pallet_transaction_payment = 11,
-        Assets: pallet_assets = 12,
+        Balances: pallet_balances = 9,
+        TransactionPayment: pallet_transaction_payment = 10,
+        Assets: pallet_assets = 11,
 
         // ContainerChain Author Verification
-        AuthoritiesNoting: pallet_cc_authorities_noting = 50,
-        AuthorInherent: pallet_author_inherent = 51,
+        AuthoritiesNoting: pallet_cc_authorities_noting = 12,
+        AuthorInherent: pallet_author_inherent = 13,
 
         // XCM
-        XcmpQueue: cumulus_pallet_xcmp_queue::{Pallet, Storage, Event<T>} = 70,
-        CumulusXcm: cumulus_pallet_xcm::{Pallet, Event<T>, Origin} = 71,
-        DmpQueue: cumulus_pallet_dmp_queue::{Pallet, Call, Storage, Event<T>} = 72,
-        PolkadotXcm: pallet_xcm::{Pallet, Call, Storage, Event<T>, Origin, Config<T>} = 73,
+        XcmpQueue: cumulus_pallet_xcmp_queue::{Pallet, Storage, Event<T>} = 14,
+        CumulusXcm: cumulus_pallet_xcm::{Pallet, Event<T>, Origin} = 15,
+        DmpQueue: cumulus_pallet_dmp_queue::{Pallet, Call, Storage, Event<T>} = 16,
+        PolkadotXcm: pallet_xcm::{Pallet, Call, Storage, Event<T>, Origin, Config<T>} = 17,
 
         // NFTs
-        Uniques: pallet_uniques,
-        Nfts: pallet_nfts,
+        Uniques: pallet_uniques = 18,
+        Nfts: pallet_nfts = 19,
 
         // Custom Pallets
-        CommunityLoanPool: pallet_community_loan_pool = 36,
-        XcavateStaking: pallet_xcavate_staking = 37,
-        NftMarketplace: pallet_nft_marketplace = 38,
+        CommunityLoanPool: pallet_community_loan_pool = 20,
+        XcavateStaking: pallet_xcavate_staking = 21,
+        NftMarketplace: pallet_nft_marketplace = 22,
 
         // Governance
-        Council: pallet_collective::<Instance1>,
-        TechnicalCommittee: pallet_collective::<Instance2>,
-        AllianceMotion: pallet_collective::<Instance3>,
-        RandomnessCollectiveFlip: pallet_insecure_randomness_collective_flip,
-        ChildBounties: pallet_child_bounties,
-        Bounties: pallet_bounties,
-        Treasury: pallet_treasury,
-
-        AcurastReceiver: pallet_acurast_fulfillment_receiver::{Pallet, Call, Storage, Event<T>} = 40,
+        Council: pallet_collective::<Instance1> = 23,
+        TechnicalCommittee: pallet_collective::<Instance2> = 24,
+        AllianceMotion: pallet_collective::<Instance3> = 25,
+        RandomnessCollectiveFlip: pallet_insecure_randomness_collective_flip = 26,
+        ChildBounties: pallet_child_bounties = 27,
+        Bounties: pallet_bounties = 28,
+        Treasury: pallet_treasury = 29,
+        
+        AcurastReceiver: pallet_acurast_fulfillment_receiver::{Pallet, Call, Storage, Event<T>} = 30,
 
 
     }
